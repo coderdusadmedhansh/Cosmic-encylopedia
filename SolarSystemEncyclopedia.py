@@ -67,16 +67,26 @@ planets = {
 st.title("👨‍🚀 Cosmic Encyclopedia")
 
 # 4. QR Code Auto-Select Logic
-query_params = st.query_params
+# 4. SUPER-ROBUST URL LOGIC
 planet_list = list(planets.keys())
 default_index = 0
-if "planet" in query_params:
-    param_planet = query_params["planet"].title()
-    if param_planet in planet_list:
-        default_index = planet_list.index(param_planet)
+
+# Use the most basic way to get params
+try:
+    all_params = st.query_params.to_dict()
+    if "planet" in all_params:
+        # This handles cases where the param might be a list or string
+        p_val = all_params["planet"]
+        if isinstance(p_val, list):
+            p_val = p_val[0]
+            
+        p_name = str(p_val).strip().title()
+        if p_name in planet_list:
+            default_index = planet_list.index(p_name)
+except Exception:
+    default_index = 0
 
 selected_planet = st.sidebar.selectbox("Choose a Planet", planet_list, index=default_index)
-
 # 5. Compact Layout (Fits on 1 Screen)
 col_img, col_text = st.columns([1, 1.4])
 
