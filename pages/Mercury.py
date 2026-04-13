@@ -13,6 +13,26 @@ def add_bg_from_local(image_file):
     st.markdown(
         f"""
         <style>
+        /* Styling the Sidebar specifically */
+section[data-testid="stSidebar"] {
+    background-color: rgba(0, 0, 0, 0.8) !important; /* Makes sidebar dark/transparent */
+}
+
+section[data-testid="stSidebar"] .stMarkdown p, 
+section[data-testid="stSidebar"] span {
+    color: #00F2FF !important; /* Bright Neon Blue for planet names */
+    font-weight: bold !important;
+    font-size: 1.1rem !important;
+}
+
+/* Change color of the selected/active planet name */
+section[data-testid="stSidebar"] [data-testid="stSidebarNavItems"] a {
+    color: #FFFFFF !important; /* White for the links */
+}
+
+section[data-testid="stSidebar"] [data-testid="stSidebarNavItems"] a:hover {
+    color: #00F2FF !important; /* Glows blue when you hover over it */
+}
         .stApp {{
             background-image: url("data:image/png;base64,{encoded_string.decode()}");
             background-size: cover;
