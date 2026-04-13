@@ -5,86 +5,99 @@ import os
 # 1. Page Config
 st.set_page_config(page_title="Exploring Mercury", page_icon="☄️")
 
-# 2. Background Function
-def add_bg_from_local(image_file):
+# 2. Background & Sidebar Styling Function
+def apply_custom_styles(image_file):
     path = os.path.join(os.getcwd(), image_file)
     with open(path, "rb") as f:
         encoded_string = base64.b64encode(f.read())
+    
     st.markdown(
         f"""
         <style>
-        /* Styling the Sidebar specifically */
-section[data-testid="stSidebar"] {
-    background-color: rgba(0, 0, 0, 0.8) !important; /* Makes sidebar dark/transparent */
-}
-
-section[data-testid="stSidebar"] .stMarkdown p, 
-section[data-testid="stSidebar"] span {
-    color: #00F2FF !important; /* Bright Neon Blue for planet names */
-    font-weight: bold !important;
-    font-size: 1.1rem !important;
-}
-
-/* Change color of the selected/active planet name */
-section[data-testid="stSidebar"] [data-testid="stSidebarNavItems"] a {
-    color: #FFFFFF !important; /* White for the links */
-}
-
-section[data-testid="stSidebar"] [data-testid="stSidebarNavItems"] a:hover {
-    color: #00F2FF !important; /* Glows blue when you hover over it */
-}
+        /* Main App Background */
         .stApp {{
             background-image: url("data:image/png;base64,{encoded_string.decode()}");
             background-size: cover;
             background-attachment: fixed;
         }}
-        h1, h2, h3, p, span, label {{ color: #00F2FF !important; }}
-        .stInfo {{ background-color: rgba(255, 255, 255, 0.1); border: 1px solid #00F2FF; }}
+
+        /* Sidebar Glassmorphism effect */
+        [data-testid="stSidebar"] {{
+            background-color: rgba(0, 0, 0, 0.7) !important;
+            border-right: 1px solid #00F2FF;
+        }}
+
+        /* Sidebar Planet Names - High Visibility */
+        [data-testid="stSidebarNavItems"] span {{
+            color: #00F2FF !important;
+            font-size: 1.2rem !important;
+            font-weight: bold !important;
+        }}
+
+        /* Active/Selected Page Highlight */
+        [data-testid="stSidebarNavItems"] a[aria-current="page"] span {{
+            color: #FFFFFF !important;
+            text-shadow: 0px 0px 10px #00F2FF;
+        }}
+
+        /* Main Content Colors */
+        h1, h2, h3, p, label {{ 
+            color: #00F2FF !important; 
+            text-shadow: 2px 2px 4px #000000;
+        }}
+
+        /* Info Box Styling */
+        .stInfo {{ 
+            background-color: rgba(0, 242, 255, 0.1) !important; 
+            border: 1px solid #00F2FF !important; 
+            color: white !important;
+        }}
         </style>
         """,
         unsafe_allow_html=True
     )
 
+# Apply the styles
 try:
-    add_bg_from_local('background.jpeg')
-except:
-    pass
+    apply_custom_styles('background.jpeg')
+except Exception:
+    st.error("Background image not found in the main directory.")
 
-# 3. Content
+# 3. Content Layout
 st.title("🚀 Mercury: The Swift Planet")
 
 col1, col2 = st.columns([1, 1.5])
 
 with col1:
-    # Ensuring path is correct for the 'planets' folder
-    st.image("planets/mercury.jpg", width=180)
+    # Look into the 'planets' folder for the image
+    st.image("planets/mercury.jpg", width=200)
 
 with col2:
-    st.info("Mercury is the smallest planet in our solar system and the closest to the Sun.")
+    st.info("Mercury is the smallest planet in our solar system and the closest to the Sun. It orbits the Sun faster than any other planet!")
 
 st.divider()
 
-# 4. CALCULATORS SECTION
+# 4. Calculators
 c1, c2 = st.columns(2)
 
 with c1:
     st.markdown("### ⚖️ Weight")
-    u_weight = st.number_input("Earth (kg):", min_value=1, value=50)
-    # Mercury Gravity is 0.38
+    u_weight = st.number_input("Earth Weight (kg):", min_value=1, value=50)
     res_w = round(u_weight * 0.38, 2)
-    st.success(f"**{res_w} kg**")
+    st.success(f"On Mercury: **{res_w} kg**")
 
 with c2:
     st.markdown("### 🚀 Travel Time")
     mode = st.selectbox("Vehicle:", ["Rocket", "Light Speed"])
-    # Distance to Mercury is ~91 Million km
-    dist_km = 91 * 1000000
+    dist_km = 91000000 # 91 Million km
     
     if mode == "Rocket":
-        # Rocket speed ~28,000 km/h
         days = round(dist_km / (28000 * 24), 1)
         st.success(f"**{days} days**")
     else:
-        # Light speed ~300,000 km/s
         seconds = round(dist_km / 300000, 2)
-        st.success(f"**{seconds} seconds**")
+        st.success(f"**{seconds} sec**")
+
+# Competition Footer
+st.markdown("---")
+st.caption("Developer: Medhansh Dusad | IoTM Cosmic Builders 2026")
