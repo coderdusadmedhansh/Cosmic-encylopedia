@@ -2,10 +2,9 @@ import streamlit as st
 import base64
 import os
 
-# 1. Page Config
-st.set_page_config(page_title="Exploring Mercury", page_icon="☄️")
+# 1. Page Config - Set to wide to use screen better
+st.set_page_config(page_title="Mercury", page_icon="☄️", layout="wide")
 
-# 2. Background & Sidebar Styling Function
 def apply_custom_styles(image_file):
     path = os.path.join(os.getcwd(), image_file)
     with open(path, "rb") as f:
@@ -14,90 +13,81 @@ def apply_custom_styles(image_file):
     st.markdown(
         f"""
         <style>
-        /* Main App Background */
+        /* Force background and remove top padding */
         .stApp {{
             background-image: url("data:image/png;base64,{encoded_string.decode()}");
             background-size: cover;
             background-attachment: fixed;
         }}
-
-        /* Sidebar Glassmorphism effect */
-        [data-testid="stSidebar"] {{
-            background-color: rgba(0, 0, 0, 0.7) !important;
-            border-right: 1px solid #00F2FF;
+        .block-container {{
+            padding-top: 1rem !important;
+            padding-bottom: 0rem !important;
         }}
-
-        /* Sidebar Planet Names - High Visibility */
+        
+        /* Make sidebar links visible */
         [data-testid="stSidebarNavItems"] span {{
             color: #00F2FF !important;
-            font-size: 1.2rem !important;
             font-weight: bold !important;
         }}
 
-        /* Active/Selected Page Highlight */
-        [data-testid="stSidebarNavItems"] a[aria-current="page"] span {{
-            color: #FFFFFF !important;
-            text-shadow: 0px 0px 10px #00F2FF;
-        }}
-
-        /* Main Content Colors */
+        /* Neon Text Styles */
         h1, h2, h3, p, label {{ 
             color: #00F2FF !important; 
-            text-shadow: 2px 2px 4px #000000;
+            margin-bottom: 5px !important;
         }}
 
-        /* Info Box Styling */
-        .stInfo {{ 
-            background-color: rgba(0, 242, 255, 0.1) !important; 
-            border: 1px solid #00F2FF !important; 
-            color: white !important;
+        /* Compact Container Boxes */
+        .compact-box {{
+            background-color: rgba(0, 0, 0, 0.6);
+            border: 1px solid #00F2FF;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
         }}
         </style>
         """,
         unsafe_allow_html=True
     )
 
-# Apply the styles
 try:
     apply_custom_styles('background.jpeg')
-except Exception:
-    st.error("Background image not found in the main directory.")
+except:
+    pass
 
-# 3. Content Layout
+# 3. Main Header (Compact)
 st.title("🚀 Mercury: The Swift Planet")
 
-col1, col2 = st.columns([1, 1.5])
+# 4. Top Row: Image and Fact
+top_col1, top_col2 = st.columns([1, 2])
 
-with col1:
-    # Look into the 'planets' folder for the image
-    st.image("planets/mercury.jpg", width=200)
+with top_col1:
+    # Reduced image size to save vertical space
+    st.image("planets/mercury.jpg", width=160)
 
-with col2:
-    st.info("Mercury is the smallest planet in our solar system and the closest to the Sun. It orbits the Sun faster than any other planet!")
+with top_col2:
+    st.markdown('<div class="compact-box">Mercury is the smallest planet and closest to the Sun. It orbits the Sun in just 88 Earth days!</div>', unsafe_allow_html=True)
 
-st.divider()
+st.write("") # Tiny spacer
 
-# 4. Calculators
-c1, c2 = st.columns(2)
+# 5. Bottom Row: Calculators side-by-side
+calc_col1, calc_col2 = st.columns(2)
 
-with c1:
+with calc_col1:
     st.markdown("### ⚖️ Weight")
-    u_weight = st.number_input("Earth Weight (kg):", min_value=1, value=50)
+    u_weight = st.number_input("Earth (kg):", min_value=1, value=50, key="w1")
     res_w = round(u_weight * 0.38, 2)
-    st.success(f"On Mercury: **{res_w} kg**")
+    st.info(f"On Mercury: **{res_w} kg**")
 
-with c2:
-    st.markdown("### 🚀 Travel Time")
-    mode = st.selectbox("Vehicle:", ["Rocket", "Light Speed"])
-    dist_km = 91000000 # 91 Million km
-    
+with calc_col2:
+    st.markdown("### 🚀 Travel")
+    mode = st.selectbox("Vehicle:", ["Rocket", "Light Speed"], key="v1")
+    dist_km = 91000000
     if mode == "Rocket":
-        days = round(dist_km / (28000 * 24), 1)
-        st.success(f"**{days} days**")
+        val = round(dist_km / (28000 * 24), 1)
+        st.info(f"Time: **{val} Days**")
     else:
-        seconds = round(dist_km / 300000, 2)
-        st.success(f"**{seconds} sec**")
+        val = round(dist_km / 300000, 1)
+        st.info(f"Time: **{val} Sec**")
 
-# Competition Footer
-st.markdown("---")
-st.caption("Developer: Medhansh Dusad | IoTM Cosmic Builders 2026")
+# Minimalist Footer
+st.markdown("<p style='text-align: center; font-size: 12px; color: grey;'>Developer: Medhansh Dusad | Cosmic Builders 2026</p>", unsafe_allow_html=True)
